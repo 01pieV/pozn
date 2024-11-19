@@ -1,0 +1,5 @@
+# ak je kluc vseobecne znamy = kodovanie
+# ak je kluc neznamy = šifrovanie
+# ak je iba jeden kluc = symetrické šifrovanie (cesarova sifra)
+# asymetricke šifrovanie = 2 kluce - 1 je verejný a 2 je súkromný
+#kodovacia tabulka python = utf-8
