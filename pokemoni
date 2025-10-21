@@ -1,0 +1,106 @@
+import json
+
+def attck_number(power: str) -> float:
+    if power == "super effective":
+        return 2
+    if power == "normal effective":
+        return 1
+    if power == "not very effective":
+        return 0.5
+    if power == "no effect":
+        return 0
+
+
+fr = open("effectiveness.json", "r")
+data = json.load(fr)
+ack = {}
+for effectiveness in data:
+    for attacker in data[effectiveness]:
+        if attacker in ack.keys():
+            temp = ack[attacker]
+        else:
+            temp = {}
+        for defender in data[effectiveness][attacker]:
+            temp[defender] = attck_number(effectiveness)
+        ack[attacker] = temp
+
+
+def attack(n1, n2, list):
+    list = list.split(",")
+    for i in range(n1):
+        utoc = []
+        obrana = []
+        for i in range(n1):
+            utoc.append(list[i])
+        for i in range(n2):
+            obrana.append(list[n1 + i])
+
+    counter = 0
+    for a in range(len(utoc)):
+        prvy = 1
+        druhy = 1
+        if ' ' in utoc[a]:
+            utocny = utoc[a].split()
+            for z in range(len(obrana)):
+                if " " in obrana[z]:
+                    obranny = obrana[z].split()
+                    for p in range(2):
+                        prvy *= ack[utocny[0]][obranny[p]]
+                        druhy *= ack[utocny[1]][obranny[p]]
+                    counter += max(prvy, druhy)
+                    prvy = 1
+                    druhy = 1
+                else:
+                    prvy *= ack[utocny[0]][obrana[z]]
+                    druhy *= ack[utocny[1]][obrana[z]]
+                    counter += max(prvy, druhy)
+                    prvy = 1
+                    druhy = 1
+        else:
+            for z in range(len(obrana)):
+                if " " in obrana[z]:
+                    obranny = obrana[z].split()
+                    counter += ack[utoc[a]][obranny[0]] * ack[utoc[a]][obranny[1]]
+                else:
+                    counter += ack[utoc[a]][obrana[z]]
+
+
+    counter2 = 0
+    for a in range(len(obrana)):
+        prvy = 1
+        druhy = 1
+        if ' ' in obrana[a]:
+            obranny = obrana[a].split()
+            for z in range(len(utoc)):
+                if " " in utoc[z]:
+                    utocny = utoc[z].split()
+                    for p in range(2):
+                        prvy *= ack[obranny[0]][utocny[p]]
+                        druhy *= ack[obranny[1]][utocny[p]]
+                    counter2 += max(prvy, druhy)
+                    prvy = 1
+                    druhy = 1
+                else:
+                    prvy *= ack[obranny[0]][utoc[z]]
+                    druhy *= ack[obranny[1]][utoc[z]]
+                    counter2 += max(prvy, druhy)
+                    prvy = 1
+                    druhy = 1
+        else:
+            for z in range(len(utoc)):
+                if " " in utoc[z]:
+                    utocny = utoc[z].split()
+                    counter2 += ack[obranny[0]][utocny[0]] * ack[obranny[0]][utocny[1]]
+                else:
+                    counter2 += ack[obranny[0]][utoc[z]]
+    vzhra = ""
+    if counter> counter2:
+        vzhra = "Me"
+    elif counter== counter2:
+        vzhra = "Equal"
+    else:
+        vzhra = "Foe"
+    return counter.__float__(), counter2.__float__(), vzhra
+
+
+print(attack(3,3,"Rock,Rock,Rock,Rock,Rock,Rock"))
